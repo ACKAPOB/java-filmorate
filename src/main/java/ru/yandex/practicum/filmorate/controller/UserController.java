@@ -9,7 +9,9 @@ import ru.yandex.practicum.filmorate.exception.InvalidNameException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -32,8 +34,8 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public Map<Integer, User> findAll() {
-        return userList;
+    public List<User> findAll() {
+        return new ArrayList<>(userList.values());
     }
 
     @PutMapping(value = "/users")
@@ -46,11 +48,5 @@ public class UserController {
             }
         }
         throw new InvalidNameException("Изменение не возможно, пользователь отсутствует");
-    }
-
-    @DeleteMapping("/users/delete")
-    public void deleteAll() {
-        userList.clear();
-        System.out.println(userList.size());
     }
 }

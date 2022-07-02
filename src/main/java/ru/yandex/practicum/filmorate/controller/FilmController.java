@@ -7,8 +7,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.InvalidNameException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,8 +43,8 @@ public class FilmController {
     }
 
     @GetMapping("/films")
-    public Map<Integer, Film> findAll() {
-        return filmList;
+    public List<Film> findAll() {
+        return new ArrayList<>(filmList.values());
     }
 
     @PutMapping(value = "/films")
