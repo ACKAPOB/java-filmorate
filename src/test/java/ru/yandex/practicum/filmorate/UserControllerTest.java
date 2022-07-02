@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class UserControllerTest {
 
     @Test
-    public void createUser() throws IOException, InterruptedException {
+    public void createUser() throws Exception {
 
         String postEndpoint = "http://localhost:8080/users";
 
@@ -42,7 +42,7 @@ public class UserControllerTest {
 
     //электронная почта не может быть пустой и должна содержать символ @
     @Test
-    public void createUserFailEmail() throws IOException, InterruptedException {
+    public void createUserFailEmail() throws Exception {
 
         String postEndpoint = "http://localhost:8080/users";
         String inputJson = "{ \"login\":\"dolore2\", \"name\":\"Nick Name2\", " +
@@ -62,7 +62,7 @@ public class UserControllerTest {
 
     //электронная почта не может быть пустой и должна содержать символ @
     @Test
-    public void createUserFailEmail2() throws IOException, InterruptedException {
+    public void createUserFailEmail2() throws Exception {
 
         String postEndpoint = "http://localhost:8080/users";
         String inputJson = "{ \"login\":\"dolore2\", \"name\":\"Nick Name2\", " +
@@ -82,7 +82,7 @@ public class UserControllerTest {
 
     //логин не может быть пустым и содержать пробелы;
     @Test
-    public void createUserFailLogin() throws IOException, InterruptedException {
+    public void createUserFailLogin() throws Exception {
 
         String postEndpoint = "http://localhost:8080/users";
         String inputJson = "{ \"login\":\"\", \"name\":\"Nick Name\", \"email\":\"mail2@mail.ru\", " +
@@ -102,7 +102,7 @@ public class UserControllerTest {
 
     //логин не может быть пустым и содержать пробелы;
     @Test
-    public void createUserFailLogin2() throws IOException, InterruptedException {
+    public void createUserFailLogin2() throws Exception {
 
         String postEndpoint = "http://localhost:8080/users";
         String inputJson = "{ \"login\":\" \", \"name\":\"Nick Name\", \"email\":\"mail2@mail.ru\", " +
@@ -122,7 +122,7 @@ public class UserControllerTest {
 
     //имя для отображения может быть пустым — в таком случае будет использован логин;
     @Test
-    public void createUserNameIsEmpty() throws IOException, InterruptedException {
+    public void createUserNameIsEmpty() throws Exception {
 
         String postEndpoint = "http://localhost:8080/users";
         String inputJson = "{ \"login\":\"dolore3\", \"email\":\"mail3@mail.ru\", " +
@@ -147,7 +147,7 @@ public class UserControllerTest {
 
     //дата рождения не может быть в будущем.
     @Test
-    public void createUserbirthdayFail() throws IOException, InterruptedException {
+    public void createUserbirthdayFail() throws Exception {
         String postEndpoint = "http://localhost:8080/users";
 
         String inputJson = "{ \"login\":\"dolore4\", \"name\":\"Nick Name4\", \"email\":\"mail4@mail.ru\", " +
@@ -168,7 +168,7 @@ public class UserControllerTest {
 
     // Список Users
     @Test
-    public void allUsers() throws IOException, InterruptedException {
+    public void allUsers() throws Exception {
 
         String postEndpoint = "http://localhost:8080/users";
         var request = HttpRequest.newBuilder()
@@ -181,9 +181,9 @@ public class UserControllerTest {
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
         int code = response.statusCode();
         int status = 200;
-        String body = "{\"5\":{\"id\":5,\"email\":\"mail3@mail.ru\",\"login\":\"dolore3\",\"name\":\"dolore3\"," +
-                "\"birthday\":\"1946-08-20\"},\"7\":{\"id\":7,\"email\":\"mail@mail.ru\",\"login\":\"dolore\"," +
-                "\"name\":\"Nick Name\",\"birthday\":\"1946-08-20\"}}";
+        String body = "[{\"id\":5,\"email\":\"mail3@mail.ru\",\"login\":\"dolore3\",\"name\":\"dolore3\"," +
+                "\"birthday\":\"1946-08-20\"},{\"id\":7,\"email\":\"mail@mail.ru\",\"login\":\"dolore\"," +
+                "\"name\":\"Nick Name\",\"birthday\":\"1946-08-20\"}]";
 
         Assertions.assertAll(
                 () -> assertEquals(body, response.body(), "Получено тело запроса отличное от ожидаемого"),
