@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -39,7 +40,8 @@ public class UserControllerTest {
         );
     }
 
-    @Test //электронная почта не может быть пустой и должна содержать символ @
+    @DisplayName("Электронная почта не может быть пустой и должна содержать символ @")
+    @Test
     public void createUserFailEmail() throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                         .content("{ \"login\":\"dolore2\", \"name\":\"Nick Name2\", " +
@@ -54,7 +56,8 @@ public class UserControllerTest {
         );
     }
 
-    @Test //электронная почта не может быть пустой и должна содержать символ @
+    @DisplayName("Электронная почта не может быть пустой и должна содержать символ @")
+    @Test
     public void createUserFailEmail2() throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                         .content("{ \"login\":\"dolore2\", \"name\":\"Nick Name2\", " +
@@ -69,7 +72,8 @@ public class UserControllerTest {
         );
     }
 
-    @Test //логин не может быть пустым и содержать пробелы;
+    @DisplayName("Логин не может быть пустым и содержать пробелы")
+    @Test
     public void createUserFailLogin() throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                         .content("{ \"login\":\"\", \"name\":\"Nick Name\", \"email\":\"mail2@mail.ru\", " +
@@ -84,7 +88,8 @@ public class UserControllerTest {
         );
     }
 
-    @Test //логин не может быть пустым и содержать пробелы;
+    @DisplayName("Логин не может быть пустым и содержать пробелы")
+    @Test
     public void createUserFailLogin2() throws Exception {
         String str = "{ \"login\":\" \", \"name\":\"Nick Name\", \"email\":\"mail2@mail.ru\", " +
                 "\"birthday\":\"1946-08-20\" }";
@@ -99,8 +104,8 @@ public class UserControllerTest {
                         "отличный от ожидаемого")
         );
     }
-
-    @Test //имя для отображения может быть пустым — в таком случае будет использован логин;
+    @DisplayName("Имя для отображения может быть пустым — в таком случае будет использован логин")
+    @Test
     public void createUserNameIsEmpty() throws Exception {
         String str = "{ \"login\":\"dolore3\", \"email\":\"mail3@mail.ru\", " +
                 "\"birthday\":\"1946-08-20\" }";
@@ -118,8 +123,8 @@ public class UserControllerTest {
                         "запроса отличное от ожидаемого")
         );
     }
-
-    @Test //дата рождения не может быть в будущем.
+    @DisplayName("Дата рождения не может быть в будущем")
+    @Test
     public void createUserbirthdayFail() throws Exception {
         String str = "{ \"login\":\"dolore4\", \"name\":\"Nick Name4\", \"email\":\"mail4@mail.ru\", " +
                 "\"birthday\":\"2220-08-20\" }";
@@ -135,7 +140,8 @@ public class UserControllerTest {
         );
     }
 
-    @Test // Список Users
+    @DisplayName("Список Users")
+    @Test
     public void allUsers() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())

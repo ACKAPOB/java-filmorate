@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -37,9 +38,8 @@ public class FilmControllerTest {
                         "запроса отличное от ожидаемого")
         );
     }
-
-
-    @Test //название не может быть пустым;
+    @DisplayName("Название не может быть пустым")
+    @Test
     public void createFilmsNameFail () throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/films").contentType(MediaType.APPLICATION_JSON)
                         .content("{ \"name\":\"\", \"description\":\"adipisicing - 2\", " +
@@ -52,8 +52,8 @@ public class FilmControllerTest {
                         "отличный от ожидаемого")
         );
     }
-
-    @Test //максимальная длина описания — 200 символов;
+    @DisplayName("Максимальная длина описания — 200 символов")
+    @Test
     public void createFilmsDescriptionFail () throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/films").contentType(MediaType.APPLICATION_JSON)
                         .content("{ \"name\":\"nisi eiusmod\", \"description\":\"\"Пятеро друзей " +
@@ -69,8 +69,8 @@ public class FilmControllerTest {
                         "отличный от ожидаемого")
         );
     }
-
-    @Test //дата релиза — не раньше 28 декабря 1895 года;
+    @DisplayName("дата релиза — не раньше 28 декабря 1895 года")
+    @Test
     public void releaseDateFail () throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/films").contentType(MediaType.APPLICATION_JSON)
                         .content("{ \"name\":\"nisi eiusmod\", \"description\":\"adipisicing\", " +
@@ -83,8 +83,8 @@ public class FilmControllerTest {
                         "отличный от ожидаемого")
         );
     }
-
-    @Test //продолжительность фильма должна быть положительной.
+    @DisplayName("Продолжительность фильма должна быть положительной")
+    @Test
     public void releaseDurationFail () throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/films").contentType(MediaType.APPLICATION_JSON)
                         .content("{ \"name\":\"nisi eiusmod\", \"description\":\"adipisicing\", " +
@@ -97,6 +97,7 @@ public class FilmControllerTest {
                         "отличный от ожидаемого")
         );
     }
+    @DisplayName("Список allFilms")
     @Test
     public void allFilms () throws Exception {
         MvcResult mvcResult = mockMvc.perform(get("/films"))
@@ -108,4 +109,3 @@ public class FilmControllerTest {
         );
     }
 }
-
