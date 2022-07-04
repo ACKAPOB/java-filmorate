@@ -20,7 +20,6 @@ public class User {
     @NotEmpty(message = "Логин не может быть пустым")
     @NotBlank (message = "Логин должен содержать хотя бы один непробельный символ")
     private String login; //логин не может быть пустым и содержать пробелы;
-    @NotEmpty
     private String name; //имя для отображения может быть пустым — в таком случае будет использован логин;
     private LocalDate birthday;//дата рождения не может быть в будущем.
     public User(@NonNull String email, String login, String name, LocalDate birthday) {
