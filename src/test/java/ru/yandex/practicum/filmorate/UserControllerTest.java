@@ -29,10 +29,8 @@ public class UserControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andReturn();
-
         String body = "{\"id\":7,\"email\":\"mail@mail.ru\",\"login\":\"dolore\"," +
                 "\"name\":\"Nick Name\",\"birthday\":\"1946-08-20\"}";
-
         Assertions.assertAll(
                 () -> assertEquals(200, mvcResult.getResponse().getStatus(), "Получен статус " +
                         "отличный от ожидаемого"),
@@ -47,7 +45,6 @@ public class UserControllerTest {
                         .content("{ \"login\":\"dolore2\", \"name\":\"Nick Name2\", " +
                                 "\"email\":\"mail2mail.ru\", \"birthday\":\"1946-08-20\" }"))
                 .andDo(MockMvcResultHandlers.print())
-                //.andExpect(status().isOk())
                 .andExpect(status().is4xxClientError())
                 .andReturn();
         int status = 400;
@@ -63,7 +60,6 @@ public class UserControllerTest {
                         .content("{ \"login\":\"dolore2\", \"name\":\"Nick Name2\", " +
                                 "\"email\":\"\", \"birthday\":\"1946-08-20\" }"))
                 .andDo(MockMvcResultHandlers.print())
-                //.andExpect(status().isOk())
                 .andExpect(status().is4xxClientError())
                 .andReturn();
         int status = 400;
@@ -113,10 +109,8 @@ public class UserControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andReturn();
-
         String body = "{\"id\":5,\"email\":\"mail3@mail.ru\",\"login\":\"dolore3\",\"name\":\"dolore3\"," +
                 "\"birthday\":\"1946-08-20\"}";
-
         Assertions.assertAll(
                 () -> assertEquals(200, mvcResult.getResponse().getStatus(), "Получен статус " +
                         "отличный от ожидаемого"),
@@ -146,11 +140,9 @@ public class UserControllerTest {
         MvcResult mvcResult = mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andReturn();
-
         String body = "[{\"id\":5,\"email\":\"mail3@mail.ru\",\"login\":\"dolore3\",\"name\":\"dolore3\"," +
                 "\"birthday\":\"1946-08-20\"},{\"id\":7,\"email\":\"mail@mail.ru\",\"login\":\"dolore\"," +
                 "\"name\":\"Nick Name\",\"birthday\":\"1946-08-20\"}]";
-
         Assertions.assertAll(
                 () -> assertEquals(200, mvcResult.getResponse().getStatus(), "Получен статус " +
                         "отличный от ожидаемого"),

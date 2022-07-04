@@ -1,8 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.validation.BindingResult;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.InvalidNameException;
@@ -16,10 +14,9 @@ import java.util.Map;
 
 @RestController
 @Validated
+@Slf4j
 public class UserController {
-
     private final Map<Integer, User> userList = new HashMap<>();
-    private static final Logger log = LoggerFactory.getLogger(UserController.class); // тут без Lombok
 
     @PostMapping(value = "/users")
     public User create(@Valid @RequestBody User user) {
@@ -32,12 +29,10 @@ public class UserController {
         userList.put(user.getId(), user);
         return user;
     }
-
     @GetMapping("/users")
     public List<User> findAll() {
         return new ArrayList<>(userList.values());
     }
-
     @PutMapping(value = "/users")
     public User update(@Valid @RequestBody User user) {
         for (User out : userList.values()) {

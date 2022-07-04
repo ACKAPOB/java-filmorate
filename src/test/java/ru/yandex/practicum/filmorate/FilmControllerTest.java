@@ -17,7 +17,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = FilmController.class)
 public class FilmControllerTest {
-
     @Autowired
     MockMvc mockMvc;
 
@@ -29,10 +28,8 @@ public class FilmControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andReturn();
-
         String body = "{\"id\":2,\"name\":\"nisi eiusmod\",\"description\":\"adipisicing\"," +
                 "\"releaseDate\":\"1967-03-25\",\"duration\":100}";
-
         Assertions.assertAll(
                 () -> assertEquals(200, mvcResult.getResponse().getStatus(), "Получен статус " +
                         "отличный от ожидаемого"),
@@ -41,8 +38,8 @@ public class FilmControllerTest {
         );
     }
 
-    //название не может быть пустым;
-    @Test
+
+    @Test //название не может быть пустым;
     public void createFilmsNameFail () throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/films").contentType(MediaType.APPLICATION_JSON)
                         .content("{ \"name\":\"\", \"description\":\"adipisicing - 2\", " +
@@ -50,14 +47,13 @@ public class FilmControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().is4xxClientError())
                 .andReturn();
-
         Assertions.assertAll(
                 () -> assertEquals(400, mvcResult.getResponse().getStatus(), "Получен статус " +
                         "отличный от ожидаемого")
         );
     }
-    //максимальная длина описания — 200 символов;
-    @Test
+
+    @Test //максимальная длина описания — 200 символов;
     public void createFilmsDescriptionFail () throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/films").contentType(MediaType.APPLICATION_JSON)
                         .content("{ \"name\":\"nisi eiusmod\", \"description\":\"\"Пятеро друзей " +
@@ -68,15 +64,13 @@ public class FilmControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().is4xxClientError())
                 .andReturn();
-
         Assertions.assertAll(
                 () -> assertEquals(400, mvcResult.getResponse().getStatus(), "Получен статус " +
                         "отличный от ожидаемого")
         );
     }
 
-    //дата релиза — не раньше 28 декабря 1895 года;
-    @Test
+    @Test //дата релиза — не раньше 28 декабря 1895 года;
     public void releaseDateFail () throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/films").contentType(MediaType.APPLICATION_JSON)
                         .content("{ \"name\":\"nisi eiusmod\", \"description\":\"adipisicing\", " +
@@ -84,15 +78,13 @@ public class FilmControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().is4xxClientError())
                 .andReturn();
-
         Assertions.assertAll(
                 () -> assertEquals(400, mvcResult.getResponse().getStatus(), "Получен статус " +
                         "отличный от ожидаемого")
         );
     }
 
-    //продолжительность фильма должна быть положительной.
-    @Test
+    @Test //продолжительность фильма должна быть положительной.
     public void releaseDurationFail () throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/films").contentType(MediaType.APPLICATION_JSON)
                         .content("{ \"name\":\"nisi eiusmod\", \"description\":\"adipisicing\", " +
@@ -100,19 +92,16 @@ public class FilmControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().is4xxClientError())
                 .andReturn();
-
         Assertions.assertAll(
                 () -> assertEquals(400, mvcResult.getResponse().getStatus(), "Получен статус " +
                         "отличный от ожидаемого")
         );
     }
-
     @Test
     public void allFilms () throws Exception {
         MvcResult mvcResult = mockMvc.perform(get("/films"))
                 .andExpect(status().isOk())
                 .andReturn();
-
         Assertions.assertAll(
                 () -> assertEquals(200, mvcResult.getResponse().getStatus(), "Получен статус " +
                         "отличный от ожидаемого")
