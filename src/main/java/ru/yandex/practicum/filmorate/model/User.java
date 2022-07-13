@@ -25,6 +25,7 @@ public class User {
     private String login; //логин не может быть пустым и содержать пробелы;
     private String name; //имя для отображения может быть пустым — в таком случае будет использован логин;
     private LocalDate birthday;//дата рождения не может быть в будущем.
+
     private final Set<Integer> friends = new HashSet(); //https://java-blog.ru/collections/interfeys-java-set
 
     public User(@NonNull String email, String login, String name, LocalDate birthday) {

@@ -1,40 +1,57 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.InvalidNameException;
+import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
-@Validated
 @Slf4j
-public class UserController {
+@RequiredArgsConstructor
+public class UserController { //будет проверять корректность запроса и вызывать методы
     private final InMemoryUserStorage inMemoryUserStorage;
-    @Autowired
-    public UserController(InMemoryUserStorage inMemoryUserStorage) {
-        this.inMemoryUserStorage = inMemoryUserStorage;
-    }
+    private final UserService userService;
 
-    @PostMapping(value = "/users")
-    public User create(@Valid @RequestBody User user) {
-        inMemoryUserStorage.createUser(user);
-        return user;
+    @PostMapping("/users")
+    public User createUser(@RequestBody User user) {
+        return userService.createUser(user);
     }
     @GetMapping("/users")
     public List<User> findAll() {
-        return inMemoryUserStorage.getAll();
+        return userService.findAll(); // переделать
     }
-    @PutMapping(value = "/users")
-    public User update(@Valid @RequestBody User user) {
-       return inMemoryUserStorage.update(user);
+    @PutMapping("/users")
+    public User updateUser(@RequestBody User user) {
+       return userService.updateUser(user); // переделать
+    }
+
+    //PUT /users/{id}/friends/{friendId} — добавление в друзья.
+    @PutMapping("/users/{userId}/friends/{friendId}")
+    public void userAddFriend(@PathVariable int userId, @PathVariable int friendId) {
+        userService.userAddFriend(userId, friendId);
+    }
+
+    //DELETE /users/{id}/friends/{friendId} - удаление из друзей
+    @DeleteMapping("/users/{userId}/friends/{friendId}")
+    public void userDelFriend(@PathVariable int userId, @PathVariable int friendId) {
+        userService.userDelFriend(userId, friendId);
+    }
+
+    //GET /users/{id}/friends — возвращаем список пользователей, являющихся его друзьями.
+    @GetMapping("/users/{id}/friends")
+    public List<User> findFriendsUser (@PathVariable int userId) {
+        return userService.findFriendsUser(userId);
+    }
+
+    //GET /users/{id}/friends/common/{otherId} — список друзей, общих с другим пользователем.
+    @GetMapping("/users/{userId}/friends/common/{otherId}")
+    public List<User> findCommonFriends (@PathVariable int userId, @PathVariable int otherId) {
+        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Метод /feed ещё не реализован.");
     }
 }

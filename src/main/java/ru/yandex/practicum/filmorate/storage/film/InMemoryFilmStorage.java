@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import lombok.Data;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 import ru.yandex.practicum.filmorate.exception.InvalidNameException;
@@ -11,8 +12,8 @@ import java.util.List;
 import java.util.Map;
 @Component
 @Validated
+@Data
 public class InMemoryFilmStorage implements FilmStorage{
-
     private final Map<Integer, Film> filmList = new HashMap<>();
 
     @Override
@@ -33,7 +34,7 @@ public class InMemoryFilmStorage implements FilmStorage{
 
     @Override
     public Film update(Film film) {
-        if(film.getName() == null || film.getName().isBlank()) {
+        if(film == null || film.getName().isBlank()) {
             throw new InvalidNameException("Имя не может быть пустым.");
         }
         for (Film out : filmList.values()) {

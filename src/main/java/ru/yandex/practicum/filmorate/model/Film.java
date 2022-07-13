@@ -9,7 +9,9 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Data
 public class Film {
@@ -26,6 +28,9 @@ public class Film {
     private LocalDate releaseDate;
     @Min(value = 0,message = "Продолжительность фильма должна быть положительной")
     private int duration; //продолжительность фильма должна быть положительной.
+
+    private final Set<Integer> likes = new HashSet(); // Список Id лайкнувших узеров
+
     public Film(@NonNull String name, String description, LocalDate releaseDate, int duration) {
         this.id = genId();
         this.name = name;
