@@ -29,15 +29,10 @@ public class User {
     private final Set<Integer> friends = new HashSet(); //https://java-blog.ru/collections/interfeys-java-set
 
     public User(@NonNull String email, String login, String name, LocalDate birthday) {
-        this.id = genId();
         this.email = email;
         this.login = login;
         this.name = name;
         this.birthday = birthday;
-    }
-    private int genId () {
-        userId++;
-        return userId;
     }
     public String getName() {
         if (name == null || name.equals("")) {

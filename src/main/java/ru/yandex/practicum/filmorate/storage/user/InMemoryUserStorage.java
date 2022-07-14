@@ -4,7 +4,7 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 import ru.yandex.practicum.filmorate.exception.InvalidNameException;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.ArrayList;
@@ -17,6 +17,7 @@ import java.util.Map;
 public class InMemoryUserStorage implements UserStorage{
     //перенесите туда всю логику хранения, обновления и поиска объектов.
     private final Map<Integer, User> userList = new HashMap<>();
+    int userId = 0;
     @Override
     public User createUser(User user) {
         for (User out : userList.values()) {
@@ -24,6 +25,7 @@ public class InMemoryUserStorage implements UserStorage{
                 throw new InvalidNameException("Пользователь с такими данными уже существует" + user.getEmail());
             }
         }
+        user.setId(genId());
         userList.put(user.getId(), user);
         return user;
     }
@@ -42,6 +44,11 @@ public class InMemoryUserStorage implements UserStorage{
     @Override
     public List<User> findAll() {
         return new ArrayList<>(userList.values());
+    }
+
+    private int genId () {
+        userId++;
+        return userId;
     }
 
 }

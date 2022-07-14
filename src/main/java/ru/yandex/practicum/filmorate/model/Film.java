@@ -32,16 +32,12 @@ public class Film {
     private final Set<Integer> likes = new HashSet(); // Список Id лайкнувших узеров
 
     public Film(@NonNull String name, String description, LocalDate releaseDate, int duration) {
-        this.id = genId();
         this.name = name;
         this.description = description;
         this.duration = duration;
         this.releaseDate = releaseDate;
     }
-    private int genId () {
-        filmId++;
-        return filmId;
-    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

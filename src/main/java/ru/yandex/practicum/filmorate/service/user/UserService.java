@@ -4,7 +4,8 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -26,12 +27,26 @@ public class UserService {
     public User createUser(User user) {
         return userStorage.createUser(user);
     }
-
     public List<User> findAll() {
         return userStorage.findAll();
     }
 
+    public User getUser(int userId) {
+        if (!userStorage.getUserList().containsKey(userId)) {
+            throw new NotFoundException("Некорректный запрос" + userId);
+        }
+        return userStorage.getUserList().get(userId);
+    }
+
     public User updateUser (User user) {
+        if (user.getId() < 0) {
+            throw new NotFoundException(
+                    "Некорректный запрос, id не может быть отрицательным " + user.getId() + " , " + user.getEmail());
+        }
+        if (!userStorage.getUserList().containsKey(user.getId())) {
+            throw new NotFoundException("Некорректный запрос, пользователь с такими данными не существует "
+                    + user.getId() + " , " + user.getEmail());
+        }
         for (User out : userStorage.getUserList().values()) {
             if (out.getId() == user.getId()) {
                 user.setId(out.getId());
@@ -39,19 +54,15 @@ public class UserService {
                 return user;
             }
         }
-        throw new UserNotFoundException("Изменение не возможно, " +
-                "Пользователь с такими данными не существует " + user.getEmail());
+        throw new IncorrectParameterException("Произошла ошибка, изменение не возможно");
     }
 
     public List<User> findFriendsUser (int userId) {
         List<User> users = new ArrayList<>();
-        for (User out : userStorage.getUserList().values()) {
-            if (out.getId() == userId) {
-                for (int outint : out.getFriends()) {
-                    users.add(userStorage.getUserList().get(outint));
-                }
-            }
-        } return users;
+        for (int out : userStorage.getUserList().get(userId).getFriends()) {
+            users.add(userStorage.getUserList().get(out));
+        }
+        return users;
     }
 
     public List<User> findCommonFriends (int userId, int otherId) {
@@ -61,17 +72,23 @@ public class UserService {
     }
 
     public void userAddFriend(int userId, int friendId) {
-        User user = userStorage.getUserList().get(userId);
-        User friend = userStorage.getUserList().get(friendId);
-        if (user == null) {
-            throw new UserNotFoundException(String.format("Пользователь (User) c id - %s не найден",userId));
+        if (userStorage.getUserList().get(userId) == null) {
+            throw new NotFoundException(String.format("Пользователь (User) c id - %s не найден",userId));
         }
-        if (friend == null) {
-            throw new UserNotFoundException(String.format("Пользователь (Friend) c id - %s не найден",friendId));
+        if (userStorage.getUserList().get(friendId) == null) {
+            throw new NotFoundException(String.format("Пользователь (Friend) c id - %s не найден",friendId));
         }
         userStorage.getUserList().get(userId).getFriends().add(friendId);
         userStorage.getUserList().get(friendId).getFriends().add(userId);
     }
     public void userDelFriend(int userId, int friendId) {
+        if (userStorage.getUserList().get(userId) == null) {
+            throw new NotFoundException(String.format("Пользователь (User) c id - %s не найден",userId));
+        }
+        if (userStorage.getUserList().get(friendId) == null) {
+            throw new NotFoundException(String.format("Пользователь (Friend) c id - %s не найден",friendId));
+        }
+        userStorage.getUserList().get(userId).getFriends().remove(friendId);
+        userStorage.getUserList().get(friendId).getFriends().remove(userId);
     }
 }

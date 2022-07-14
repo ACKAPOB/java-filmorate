@@ -15,14 +15,11 @@ import java.util.Map;
 @Data
 public class InMemoryFilmStorage implements FilmStorage{
     private final Map<Integer, Film> filmList = new HashMap<>();
+    int filmId = 0;
 
     @Override
     public Film create(Film film) {
-        for (Film out : filmList.values()) {
-            if (out.equals(film)) {
-                throw new InvalidNameException("Фильм с такими данными уже существует");
-            }
-        }
+        film.setId(genId());
         filmList.put(film.getId(), film);
         return film;
     }
@@ -51,5 +48,10 @@ public class InMemoryFilmStorage implements FilmStorage{
     @Override
     public List<Film> getAll() {
         return new ArrayList<>(filmList.values());
+    }
+
+    private int genId () {
+        filmId++;
+        return filmId;
     }
 }
