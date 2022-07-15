@@ -11,7 +11,6 @@ public interface FilmStorage {
     Film update(Film film);
     List<Film> getAll();
     Map<Integer, Film> getFilmList();
-
     boolean isExists(Film film);
 
 }

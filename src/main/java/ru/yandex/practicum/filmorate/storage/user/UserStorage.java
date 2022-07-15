@@ -9,10 +9,8 @@ public interface UserStorage {
     //Создайте интерфейсы UserStorage в которых будут определены методы добавления, удаления и модификации объектов.
     User createUser(User user);
     void delete(int userId);
-
     User updateUser(User user);
     List<User> findAll();
     Map<Integer, User> getUserList();
-
     boolean isExists(User user);
 }

@@ -4,38 +4,39 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import ru.yandex.practicum.filmorate.model.User;
-
-import java.time.LocalDate;
-import java.util.List;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class UserControllerIT {
 
-    //https://sysout.ru/testirovanie-spring-boot-prilozheniya-s-testresttemplate/
-    // Разобраться с проверкой невалидных запросов
-
     @Autowired
-    //MockMvc mockMvc;
-    private TestRestTemplate restTemplate;
-    @DisplayName("Создание user")
+    MockMvc mockMvc;
+
     @Test
     public void createUser() throws Exception {
-        User user = new User("mail@mail.ru", "dolore", "Nick Name",
-                LocalDate.of(1946,8,20));
-        var response = restTemplate.postForEntity("/users", user, User.class);
+        MvcResult mvcResult = mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
+                        .content("{ \"login\":\"dolore\", \"name\":\"Nick Name\", \"email\":\"mail@mail.ru\", " +
+                                "\"birthday\":\"1946-08-20\" }"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andReturn();
+        String body = "{\"id\":2,\"email\":\"mail@mail.ru\",\"login\":\"dolore\"," +
+                "\"name\":\"Nick Name\",\"birthday\":\"1946-08-20\",\"friends\":[]}";
         Assertions.assertAll(
-                () -> assertEquals(HttpStatus.OK, response.getStatusCode(), "Получен статус " +
+                () -> assertEquals(200, mvcResult.getResponse().getStatus(), "Получен статус " +
                         "отличный от ожидаемого"),
-                () -> assertEquals(user, response.getBody(), "Получено тело " +
+                () -> assertEquals(body, mvcResult.getResponse().getContentAsString(), "Получено тело " +
                         "запроса отличное от ожидаемого")
         );
     }
@@ -43,41 +44,118 @@ public class UserControllerIT {
     @DisplayName("Электронная почта не может быть пустой и должна содержать символ @")
     @Test
     public void createUserFailEmail() throws Exception {
-        var response = restTemplate.postForEntity("/users", new User("mail2@mail.ru",
-                "dolore2", "Nick Name2", LocalDate.of(1946,8,20)), User.class);
+        MvcResult mvcResult = mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
+                        .content("{ \"login\":\"dolore2\", \"name\":\"Nick Name2\", " +
+                                "\"email\":\"mail2mail.ru\", \"birthday\":\"1946-08-20\" }"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+        int status = 400;
         Assertions.assertAll(
-                () -> assertEquals(HttpStatus.OK, response.getStatusCode(), "Получен статус " +
+                () -> assertEquals(status, mvcResult.getResponse().getStatus(), "Получен статус " +
                         "отличный от ожидаемого")
         );
     }
 
+    @DisplayName("Электронная почта не может быть пустой и должна содержать символ @")
+    @Test
+    public void createUserFailEmail2() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
+                        .content("{ \"login\":\"dolore2\", \"name\":\"Nick Name2\", " +
+                                "\"email\":\"\", \"birthday\":\"1946-08-20\" }"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+        int status = 400;
+        Assertions.assertAll(
+                () -> assertEquals(status, mvcResult.getResponse().getStatus(), "Получен статус " +
+                        "отличный от ожидаемого")
+        );
+    }
 
+    @DisplayName("Логин не может быть пустым и содержать пробелы")
+    @Test
+    public void createUserFailLogin() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
+                        .content("{ \"login\":\"\", \"name\":\"Nick Name\", \"email\":\"mail2@mail.ru\", " +
+                                "\"birthday\":\"1946-08-20\" }"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+        int status = 400;
+        Assertions.assertAll(
+                () -> assertEquals(status, mvcResult.getResponse().getStatus(), "Получен статус " +
+                        "отличный от ожидаемого")
+        );
+    }
 
+    @DisplayName("Логин не может быть пустым и содержать пробелы")
+    @Test
+    public void createUserFailLogin2() throws Exception {
+        String str = "{ \"login\":\" \", \"name\":\"Nick Name\", \"email\":\"mail2@mail.ru\", " +
+                "\"birthday\":\"1946-08-20\" }";
+        MvcResult mvcResult = mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
+                        .content(str))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+        int status = 400;
+        Assertions.assertAll(
+                () -> assertEquals(status, mvcResult.getResponse().getStatus(), "Получен статус " +
+                        "отличный от ожидаемого")
+        );
+    }
+    @DisplayName("Имя для отображения может быть пустым — в таком случае будет использован логин")
+    @Test
+    public void createUserNameIsEmpty() throws Exception {
+        String str = "{ \"login\":\"dolore3\", \"email\":\"mail3@mail.ru\", " +
+                "\"birthday\":\"1946-08-20\" }";
+        MvcResult mvcResult = mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
+                        .content(str))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andReturn();
+        String body = "{\"id\":1,\"email\":\"mail3@mail.ru\",\"login\":\"dolore3\",\"name\":\"dolore3\"," +
+                "\"birthday\":\"1946-08-20\",\"friends\":[]}";
+        Assertions.assertAll(
+                () -> assertEquals(200, mvcResult.getResponse().getStatus(), "Получен статус " +
+                        "отличный от ожидаемого"),
+                () -> assertEquals(body, mvcResult.getResponse().getContentAsString(), "Получено тело " +
+                        "запроса отличное от ожидаемого")
+        );
+    }
+    @DisplayName("Дата рождения не может быть в будущем")
+    @Test
+    public void createUserbirthdayFail() throws Exception {
+        String str = "{ \"login\":\"dolore4\", \"name\":\"Nick Name4\", \"email\":\"mail4@mail.ru\", " +
+                "\"birthday\":\"2220-08-20\"}";
+        MvcResult mvcResult = mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
+                        .content(str))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+        int status = 400;
+        Assertions.assertAll(
+                () -> assertEquals(status, mvcResult.getResponse().getStatus(), "Получен статус " +
+                        "отличный от ожидаемого")
+        );
+    }
 
     @DisplayName("Список Users")
     @Test
     public void allUsers() throws Exception {
-        User user1 = new User("mail11@mail.ru", "dolore11", "Nick Name11",
-                LocalDate.of(1946,8,20));
-        User user2 = new User("mail22@mail.ru", "dolore22", "Nick Name22",
-                LocalDate.of(1946,8,20));
-        var response1 = restTemplate.postForEntity("/users", user1, User.class);
-        var response2 = restTemplate.postForEntity("/users", user2, User.class);
-        // Тут костыль какой-то, сначала делаю два Post, может можно это в один response как то уложить?
-        ResponseEntity<List<User>> response = restTemplate.exchange("/users", HttpMethod.GET, null,
-                    new ParameterizedTypeReference<List<User>>() {
-                    });
-            List<User> persons = response.getBody();
-        System.out.println(persons);
-
+        MvcResult mvcResult = mockMvc.perform(get("/users"))
+                .andExpect(status().isOk())
+                .andReturn();
+        String body = "[{\"id\":1,\"email\":\"mail3@mail.ru\",\"login\":\"dolore3\",\"name\":\"dolore3\"," +
+                "\"birthday\":\"1946-08-20\",\"friends\":[]}," +
+                "{\"id\":2,\"email\":\"mail@mail.ru\",\"login\":\"dolore\"," +
+                "\"name\":\"Nick Name\",\"birthday\":\"1946-08-20\",\"friends\":[]}]";
         Assertions.assertAll(
-                () -> assertEquals(HttpStatus.OK, response.getStatusCode(), "Получен статус " +
+                () -> assertEquals(200, mvcResult.getResponse().getStatus(), "Получен статус " +
                         "отличный от ожидаемого"),
-                () -> assertEquals(persons.size(), 4, "Количество записей " +
-                        "запроса отличное от ожидаемого"),
-                () -> assertEquals(persons.get(3).getEmail(), user2.getEmail(), "Получено тело " +
+                () -> assertEquals(body, mvcResult.getResponse().getContentAsString(), "Получено тело " +
                         "запроса отличное от ожидаемого")
         );
     }
-
 }
