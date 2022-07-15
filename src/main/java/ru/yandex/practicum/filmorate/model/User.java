@@ -8,10 +8,12 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 @birthDay(message = "дата рождения не может быть в будущем") // Тут валидатор немного подругому сделан
 public class User {
-    private static int userId = 0;
     @EqualsAndHashCode.Exclude
     private int id;
     @Email
@@ -22,16 +24,14 @@ public class User {
     private String login; //логин не может быть пустым и содержать пробелы;
     private String name; //имя для отображения может быть пустым — в таком случае будет использован логин;
     private LocalDate birthday;//дата рождения не может быть в будущем.
+
+    private final Set<Integer> friends = new HashSet(); //https://java-blog.ru/collections/interfeys-java-set
+
     public User(@NonNull String email, String login, String name, LocalDate birthday) {
-        this.id = genId();
         this.email = email;
         this.login = login;
         this.name = name;
         this.birthday = birthday;
-    }
-    private int genId () {
-        userId++;
-        return userId;
     }
     public String getName() {
         if (name == null || name.equals("")) {

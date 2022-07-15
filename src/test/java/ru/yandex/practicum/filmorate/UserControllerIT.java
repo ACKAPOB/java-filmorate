@@ -4,20 +4,21 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import ru.yandex.practicum.filmorate.controller.UserController;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = UserController.class)
-public class UserControllerTest {
+@SpringBootTest
+@AutoConfigureMockMvc
+public class UserControllerIT {
 
     @Autowired
     MockMvc mockMvc;
@@ -30,8 +31,8 @@ public class UserControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andReturn();
-        String body = "{\"id\":7,\"email\":\"mail@mail.ru\",\"login\":\"dolore\"," +
-                "\"name\":\"Nick Name\",\"birthday\":\"1946-08-20\"}";
+        String body = "{\"id\":2,\"email\":\"mail@mail.ru\",\"login\":\"dolore\"," +
+                "\"name\":\"Nick Name\",\"birthday\":\"1946-08-20\",\"friends\":[]}";
         Assertions.assertAll(
                 () -> assertEquals(200, mvcResult.getResponse().getStatus(), "Получен статус " +
                         "отличный от ожидаемого"),
@@ -114,8 +115,8 @@ public class UserControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andReturn();
-        String body = "{\"id\":5,\"email\":\"mail3@mail.ru\",\"login\":\"dolore3\",\"name\":\"dolore3\"," +
-                "\"birthday\":\"1946-08-20\"}";
+        String body = "{\"id\":1,\"email\":\"mail3@mail.ru\",\"login\":\"dolore3\",\"name\":\"dolore3\"," +
+                "\"birthday\":\"1946-08-20\",\"friends\":[]}";
         Assertions.assertAll(
                 () -> assertEquals(200, mvcResult.getResponse().getStatus(), "Получен статус " +
                         "отличный от ожидаемого"),
@@ -127,7 +128,7 @@ public class UserControllerTest {
     @Test
     public void createUserbirthdayFail() throws Exception {
         String str = "{ \"login\":\"dolore4\", \"name\":\"Nick Name4\", \"email\":\"mail4@mail.ru\", " +
-                "\"birthday\":\"2220-08-20\" }";
+                "\"birthday\":\"2220-08-20\"}";
         MvcResult mvcResult = mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                         .content(str))
                 .andDo(MockMvcResultHandlers.print())
@@ -146,9 +147,10 @@ public class UserControllerTest {
         MvcResult mvcResult = mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andReturn();
-        String body = "[{\"id\":5,\"email\":\"mail3@mail.ru\",\"login\":\"dolore3\",\"name\":\"dolore3\"," +
-                "\"birthday\":\"1946-08-20\"},{\"id\":7,\"email\":\"mail@mail.ru\",\"login\":\"dolore\"," +
-                "\"name\":\"Nick Name\",\"birthday\":\"1946-08-20\"}]";
+        String body = "[{\"id\":1,\"email\":\"mail3@mail.ru\",\"login\":\"dolore3\",\"name\":\"dolore3\"," +
+                "\"birthday\":\"1946-08-20\",\"friends\":[]}," +
+                "{\"id\":2,\"email\":\"mail@mail.ru\",\"login\":\"dolore\"," +
+                "\"name\":\"Nick Name\",\"birthday\":\"1946-08-20\",\"friends\":[]}]";
         Assertions.assertAll(
                 () -> assertEquals(200, mvcResult.getResponse().getStatus(), "Получен статус " +
                         "отличный от ожидаемого"),

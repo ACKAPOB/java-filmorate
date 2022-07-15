@@ -4,20 +4,23 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import ru.yandex.practicum.filmorate.controller.FilmController;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = FilmController.class)
-public class FilmControllerTest {
+@SpringBootTest
+@AutoConfigureMockMvc
+public class FilmControllerIT {
+    //Spring Boot Integration Testing With @SpringBootTest
+    //https://www.arhohuttunen.com/spring-boot-integration-testing/
     @Autowired
     MockMvc mockMvc;
 
@@ -29,8 +32,8 @@ public class FilmControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andReturn();
-        String body = "{\"id\":2,\"name\":\"nisi eiusmod\",\"description\":\"adipisicing\"," +
-                "\"releaseDate\":\"1967-03-25\",\"duration\":100}";
+        String body = "{\"id\":1,\"name\":\"nisi eiusmod\",\"description\":\"adipisicing\"," +
+                "\"releaseDate\":\"1967-03-25\",\"duration\":100,\"likes\":[]}";
         Assertions.assertAll(
                 () -> assertEquals(200, mvcResult.getResponse().getStatus(), "Получен статус " +
                         "отличный от ожидаемого"),
