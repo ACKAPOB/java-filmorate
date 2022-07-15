@@ -2,10 +2,8 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
@@ -25,6 +23,12 @@ public class UserController { //будет проверять корректно
     public User createUser(@Valid @RequestBody User user) {
         log.info("Post user Email = {}", user.getEmail());
         return userService.createUser(user);
+    }
+
+    @DeleteMapping("/users/{userId}")
+    public void deleteFilm (@PathVariable int userId) {
+        log.info("Get user id={}", userId);
+        userService.deleteFilm(userId);
     }
     @GetMapping("/users")
     public List<User> findAll() {
@@ -61,6 +65,7 @@ public class UserController { //будет проверять корректно
     //GET /users/{id}/friends/common/{otherId} — список друзей, общих с другим пользователем.
     @GetMapping("/users/{userId}/friends/common/{otherId}")
     public List<User> findCommonFriends (@PathVariable int userId, @PathVariable int otherId) {
+       log.info("Get friends common userId = {} , otherId = {}", userId , otherId);
        return userService.findCommonFriends(userId,otherId);
     }
 

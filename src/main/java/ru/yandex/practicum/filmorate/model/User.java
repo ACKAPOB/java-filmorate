@@ -14,7 +14,6 @@ import java.util.Set;
 @Data
 @birthDay(message = "дата рождения не может быть в будущем") // Тут валидатор немного подругому сделан
 public class User {
-    private static int userId = 0;
     @EqualsAndHashCode.Exclude
     private int id;
     @Email

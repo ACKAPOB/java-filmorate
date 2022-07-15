@@ -2,9 +2,6 @@ package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.Data;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.annotation.Validated;
-import ru.yandex.practicum.filmorate.exception.InvalidNameException;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.ArrayList;
@@ -20,19 +17,15 @@ public class InMemoryUserStorage implements UserStorage{
     int userId = 0;
     @Override
     public User createUser(User user) {
-        for (User out : userList.values()) {
-            if (out.equals(user)) {
-                throw new InvalidNameException("Пользователь с такими данными уже существует" + user.getEmail());
-            }
-        }
         user.setId(genId());
         userList.put(user.getId(), user);
         return user;
     }
 
+
     @Override
-    public User delete(User user) {
-        return null;
+    public void delete(int userId) {
+        userList.remove(userId);
     }
 
     @Override
@@ -49,6 +42,15 @@ public class InMemoryUserStorage implements UserStorage{
     private int genId () {
         userId++;
         return userId;
+    }
+
+    @Override
+    public boolean isExists(User user) {
+        for (User out : userList.values()) {
+            if (out.getEmail().equals(user.getEmail()))
+                return true;
+        }
+        return false;
     }
 
 }

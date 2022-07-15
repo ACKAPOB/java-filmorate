@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.storage.film;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
-import ru.yandex.practicum.filmorate.exception.InvalidNameException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.ArrayList;
@@ -25,23 +24,13 @@ public class InMemoryFilmStorage implements FilmStorage{
     }
 
     @Override
-    public Film delete(Film film) {
-        return null;
+    public void deleteFilm(int filmId)  {
+        filmList.remove(filmId);
     }
 
     @Override
     public Film update(Film film) {
-        if(film == null || film.getName().isBlank()) {
-            throw new InvalidNameException("Имя не может быть пустым.");
-        }
-        for (Film out : filmList.values()) {
-            if (out.getId() == film.getId()) {
-                filmList.put(film.getId() ,film);
-                break;
-            } else {
-                throw new InvalidNameException("Изменение не возможно, фильм отсутствует");
-            }
-        }
+        filmList.replace(film.getId(),film);
         return film;
     }
 
@@ -54,4 +43,13 @@ public class InMemoryFilmStorage implements FilmStorage{
         filmId++;
         return filmId;
     }
+    @Override
+    public boolean isExists(Film film) {
+        for (Film out : filmList.values()) {
+            if (out.getName().equals(film.getName()) && out.getReleaseDate().equals(film.getReleaseDate()))
+                return true;
+        }
+        return false;
+    }
+
 }

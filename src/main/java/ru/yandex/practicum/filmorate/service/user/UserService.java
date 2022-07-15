@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
+import ru.yandex.practicum.filmorate.exception.InvalidNameException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -25,7 +25,17 @@ public class UserService {
     private final UserStorage userStorage;
 
     public User createUser(User user) {
+        if (userStorage.getUserList().containsValue(user)) {
+            throw new InvalidNameException("Пользователь с такими данными уже существует" + user.getEmail());
+        }
         return userStorage.createUser(user);
+    }
+
+    public void deleteFilm(int filmId) {
+        if (!userStorage.isExists(userStorage.getUserList().get(filmId))) {
+            throw new InvalidNameException("Фильм с такими данными не существует");
+        }
+        userStorage.delete(filmId);
     }
     public List<User> findAll() {
         return userStorage.findAll();
@@ -47,14 +57,8 @@ public class UserService {
             throw new NotFoundException("Некорректный запрос, пользователь с такими данными не существует "
                     + user.getId() + " , " + user.getEmail());
         }
-        for (User out : userStorage.getUserList().values()) {
-            if (out.getId() == user.getId()) {
-                user.setId(out.getId());
-                userStorage.updateUser(user);
-                return user;
-            }
-        }
-        throw new IncorrectParameterException("Произошла ошибка, изменение не возможно");
+        userStorage.getUserList().replace(user.getId(), user);
+        return user;
     }
 
     public List<User> findFriendsUser (int userId) {
@@ -66,9 +70,9 @@ public class UserService {
     }
 
     public List<User> findCommonFriends (int userId, int otherId) {
-        List<User> a = new LinkedList<>(findFriendsUser(userId));
-        a.retainAll(findFriendsUser(otherId));
-        return a;
+        List<User> out = new LinkedList<>(findFriendsUser(userId));
+        out.retainAll(findFriendsUser(otherId));
+        return out;
     }
 
     public void userAddFriend(int userId, int friendId) {
