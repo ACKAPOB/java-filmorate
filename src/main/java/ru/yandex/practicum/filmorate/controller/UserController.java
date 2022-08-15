@@ -9,7 +9,8 @@ import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.Collection;
+import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -18,18 +19,20 @@ import java.util.List;
 public class UserController { //будет проверять корректность запроса и вызывать методы
     private final InMemoryUserStorage inMemoryUserStorage;
     private final UserService userService;
+
     @PostMapping("/users")
     public User createUser(@Valid @RequestBody User user) {
         log.info("Post user Email = {}", user.getEmail());
         return userService.createUser(user);
-    }
+    } // ФЗ 11
+
     @DeleteMapping("/users/{userId}")
-    public void deleteFilm (@PathVariable int userId) {
+    public void deleteUser (@PathVariable int userId) {
         log.info("Get user id={}", userId);
-        userService.deleteFilm(userId);
-    }
+        userService.deleteUser(userId);
+    } // ФЗ 11
     @GetMapping("/users")
-    public List<User> findAll() {
+    public Collection<User> findAll() {
         log.info("FindAll user");
         return userService.findAll(); // переделать
     }
@@ -55,22 +58,21 @@ public class UserController { //будет проверять корректно
 
     //GET /users/{id}/friends — возвращаем список пользователей, являющихся его друзьями.
     @GetMapping("/users/{userId}/friends")
-    public List<User> findFriendsUser (@PathVariable("userId") int userId) {
+    public Collection<User> findFriendsUser (@PathVariable("userId") int userId) {
         log.info("Get friends user id = {}", userId);
         return userService.findFriendsUser(userId);
     }
 
     //GET /users/{id}/friends/common/{otherId} — список друзей, общих с другим пользователем.
     @GetMapping("/users/{userId}/friends/common/{otherId}")
-    public List<User> findCommonFriends (@PathVariable int userId, @PathVariable int otherId) {
-       log.info("Get friends common userId = {} , otherId = {}", userId , otherId);
-       return userService.findCommonFriends(userId,otherId);
+    public Collection<User> findCommonFriends (@PathVariable int userId, @PathVariable int otherId) {
+        log.info("Get friends common userId = {} , otherId = {}", userId , otherId);
+        return userService.findCommonFriends(userId,otherId);
     }
 
     @GetMapping("/users/{userId}")
-    public User getUser (@PathVariable int userId) {
+    public Optional<User> getUser (@PathVariable int userId) {
         log.info("Get user id = {}", userId);
         return userService.getUser(userId);
-        //throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Метод /feed ещё не реализован."); -- на будущее
     }
 }

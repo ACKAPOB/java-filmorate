@@ -5,10 +5,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 @Component
 @Validated
 @Data
@@ -50,6 +48,26 @@ public class InMemoryFilmStorage implements FilmStorage{
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public Film getFilm(int id) {
+        return null;
+    }
+
+    @Override
+    public void userAddLikes(int filmId, int userId) {
+
+    }
+
+    @Override
+    public void userDelLikes(int filmId, int userId) {
+
+    }
+
+    @Override
+    public Collection<Film> findTopFilms(int count) {
+        return null;
     }
 
 }
