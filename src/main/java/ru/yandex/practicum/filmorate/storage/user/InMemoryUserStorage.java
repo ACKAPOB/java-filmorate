@@ -9,7 +9,6 @@ import java.util.*;
 @Component
 @Data
 public class InMemoryUserStorage implements UserStorage{
-    //перенесите туда всю логику хранения, обновления и поиска объектов.
     private final Map<Integer, User> userList = new HashMap<>();
     int userId = 0;
     @Override

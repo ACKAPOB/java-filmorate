@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service.Mpa;
 
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,6 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-@Data
 public class MpaService {
     private final MpaStorage mpaStorage;
 

@@ -19,7 +19,7 @@ import java.util.Collection;
 // по количеству лайков. Пусть пока каждый пользователь может поставить лайк фильму только один раз.
 @Service
 @Slf4j
-@Data
+
 public class FilmService {
     private final FilmStorage filmStorage; // внедрение зависимостей через конструктор.
     private final UserStorage userStorage;
