@@ -18,13 +18,11 @@ import java.util.List;
 public class UserController { //будет проверять корректность запроса и вызывать методы
     private final InMemoryUserStorage inMemoryUserStorage;
     private final UserService userService;
-
     @PostMapping("/users")
     public User createUser(@Valid @RequestBody User user) {
         log.info("Post user Email = {}", user.getEmail());
         return userService.createUser(user);
     }
-
     @DeleteMapping("/users/{userId}")
     public void deleteFilm (@PathVariable int userId) {
         log.info("Get user id={}", userId);

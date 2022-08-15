@@ -20,7 +20,6 @@ public class FilmController {
         log.info("Post films id = {}", film.getId());
         return filmService.createFilm(film);
     }
-
     @DeleteMapping("/films/{filmId}")
     public void deleteFilm (@PathVariable int filmId) {
         log.info("Get film id={}", filmId);
