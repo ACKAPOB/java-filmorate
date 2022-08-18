@@ -4,20 +4,15 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @Data
 public class InMemoryUserStorage implements UserStorage{
-    //перенесите туда всю логику хранения, обновления и поиска объектов.
     private final Map<Integer, User> userList = new HashMap<>();
     int userId = 0;
     @Override
     public User createUser(User user) {
-        user.setId(genId());
         userList.put(user.getId(), user);
         return user;
     }
@@ -50,6 +45,31 @@ public class InMemoryUserStorage implements UserStorage{
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public void userAddFriend(int userId, int friendId) {
+        return;
+    }
+
+    @Override
+    public Optional<User> getUser(int userId) {
+        return null;
+    }
+
+    @Override
+    public Collection<User> findFriendsUser(int userId) {
+        return null;
+    }
+
+    @Override
+    public void userDelFriend(int userId, int friendId) {
+
+    }
+
+    @Override
+    public Collection<User> findCommonFriends(int userId, int otherId) {
+        return null;
     }
 
 }

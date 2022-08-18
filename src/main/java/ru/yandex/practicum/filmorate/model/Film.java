@@ -3,15 +3,12 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.*;
 import ru.yandex.practicum.filmorate.validator.LocalDateMin;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Data
+
 public class Film {
     //дата релиза — не раньше 28 декабря 1895 года;
     private static final LocalDate minDateRealease = LocalDate.of(1895, 12, 28);
@@ -32,14 +29,19 @@ public class Film {
     @EqualsAndHashCode.Exclude
     private final Set<Integer> likes = new HashSet(); // Список Id лайкнувших узеров
 
-    public Film(@NonNull String name, String description, LocalDate releaseDate, int duration) {
+    private final Mpa mpa;
+    LinkedHashSet<Genre> genres;
+
+    public Film(@NonNull String name, String description, LocalDate releaseDate, int duration, Mpa mpa) {
         this.name = name;
         this.description = description;
         this.duration = duration;
         this.releaseDate = releaseDate;
+        this.mpa = mpa;
     }
     @Override
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }
